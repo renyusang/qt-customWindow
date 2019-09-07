@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>mainPage.qml</file>
+    </qresource>
+    <qresource prefix="/image">
+        <file>Logo.svg</file>
+        <file>Gears.svg</file>
+        <file>mini.svg</file>
+        <file>mini-max.svg</file>
+        <file>PaperPlane.svg</file>
+        <file>Plan.svg</file>
+        <file>XDelete.svg</file>
+    </qresource>
+</RCC>
