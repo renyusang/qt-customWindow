@@ -15,8 +15,15 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    bool nativeEvent(const QByteArray &eventType, void *message, long *result);
+    //bool nativeEvent(const QByteArray &eventType, void *message, long *result);
     ~MainWindow();
+
+protected:
+    //void resizeEvent(QResizeEvent *);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent * event);
+    void mouseMoveEvent(QMouseEvent * event);
+    //void showEvent(QShowEvent* event);
 
 private:
     Ui::MainWindow *ui;
@@ -25,6 +32,10 @@ private:
     int m_nBorderWidth = 5;
     bool m_bPressed;
     QPoint pLast;
+    int m_curPos;
+
+    void setCursorShape(int flag);
+    int setCurFlag(QPoint p);
 
 
 };
