@@ -1,11 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "skyrovertitlebar.h"
-
-#ifdef Q_OS_WIN
-#include <qt_windows.h>
-#include <Windowsx.h>
-#endif
+#include <QDebug>
 
 #define MARGIN 5
 
@@ -27,6 +23,10 @@ MainWindow::MainWindow(QWidget *parent) :
     backPal.setColor(QPalette::Background, Qt::black);
     pTitleBar->setAutoFillBackground(true);
     pTitleBar->setPalette(backPal);
+
+    titleHeight = pTitleBar->height();
+
+    pTitleBar->setMouseTracking(true);
 
     QQuickWidget *pWidget = new QQuickWidget();
     pWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
@@ -52,62 +52,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-/*
-bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, long *result)
-{
-    Q_UNUSED(eventType)
-
-    MSG *param = static_cast<MSG *>(message);
-
-    switch (param->message)
-    {
-    case WM_NCHITTEST:
-    {
-        int nX = GET_X_LPARAM(param->lParam) - this->geometry().x();
-        int nY = GET_Y_LPARAM(param->lParam) - this->geometry().y();
-
-        // 如果鼠标位于子控件上，则不进行处理
-        if (childAt(nX, nY) != nullptr)
-            return QWidget::nativeEvent(eventType, message, result);
-
-        *result = HTCAPTION;
-
-        // 鼠标区域位于窗体边框，进行缩放
-        if ((nX > 0) && (nX < m_nBorderWidth))
-            *result = HTLEFT;
-
-        if ((nX > this->width() - m_nBorderWidth) && (nX < this->width()))
-            *result = HTRIGHT;
-
-        if ((nY > 0) && (nY < m_nBorderWidth))
-            *result = HTTOP;
-
-        if ((nY > this->height() - m_nBorderWidth) && (nY < this->height()))
-            *result = HTBOTTOM;
-
-        if ((nX > 0) && (nX < m_nBorderWidth) && (nY > 0)
-                && (nY < m_nBorderWidth))
-            *result = HTTOPLEFT;
-
-        if ((nX > this->width() - m_nBorderWidth) && (nX < this->width())
-                && (nY > 0) && (nY < m_nBorderWidth))
-            *result = HTTOPRIGHT;
-
-        if ((nX > 0) && (nX < m_nBorderWidth)
-                && (nY > this->height() - m_nBorderWidth) && (nY < this->height()))
-            *result = HTBOTTOMLEFT;
-
-        if ((nX > this->width() - m_nBorderWidth) && (nX < this->width())
-                && (nY > this->height() - m_nBorderWidth) && (nY < this->height()))
-            *result = HTBOTTOMRIGHT;
-
-        return true;
-    }
-    }
-
-    return QWidget::nativeEvent(eventType, message, result);
-}
-*/
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
@@ -124,9 +68,10 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
-    QApplication::restoreOverrideCursor();
+    int poss = setCurFlag(event->pos());
+    setCursorShape(poss);
     event->ignore();
-
+    qDebug() <<"Released";
     m_bPressed = false;
 }
 
@@ -143,9 +88,18 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     {
         QPoint ptemp = event->globalPos();
         ptemp = ptemp - pLast;
-        QRect wid = geometry();
-        int minWidth = this->minimumWidth();
-        int minHeight = this->minimumHeight();
+
+
+        if(m_curPos == 22)
+        {
+            ptemp = ptemp+pos();
+            move(ptemp);
+        }
+        else
+        {
+            QRect wid = geometry();
+            int minWidth = this->minimumWidth();
+            int minHeight = this->minimumHeight();
 
         switch (m_curPos)
         {
@@ -173,7 +127,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
                 wid.setTopRight(pos);
                 break;
             }
-         case 31:
+         case 41:
             {
                 QPoint pos = wid.bottomLeft();
 
@@ -185,7 +139,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
                 wid.setBottomLeft(pos);
                 break;
             }
-        case 33:
+        case 43:
             {
                 QPoint pos = wid.bottomRight();
 
@@ -207,6 +161,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
                 break;
             }
         case 21:
+        case 31:
             {
                 int leftX = wid.left();
 
@@ -217,6 +172,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
                 break;
             }
         case 23:
+        case 33:
             {
                 int rightX = wid.right();
 
@@ -226,7 +182,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
                 wid.setRight(rightX);
                 break;
             }
-        case 32:
+        case 42:
             {
                 int botY = wid.bottom();
                 if(wid.height() > minHeight || ptemp.y() > 0)
@@ -235,38 +191,38 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
                 wid.setBottom(botY);
                 break;
             }
+        case 22:
+            {
+
+            }
         }
         setGeometry(wid);
 
+        }
         pLast = event->globalPos();
     }
     event->ignore();
 }
-/*
-int MainWindow::setCursorStyle(const QPoint &curPoint)
-{
-    int nCurWidth = this->width();
-    int nCurHeight = this->height();
 
-}
-*/
 int MainWindow::setCurFlag(QPoint p)
 {
-    int row;
-    if (p.x() < MARGIN)
-        row = 1;
-    else if (p.x() < (this->frameGeometry().width() - MARGIN))
-        row = 2;
-    else
-        row = 3;
-
     int column;
-    if (p.y() < MARGIN)
-        column = 10;
-    else if (p.y() < (this->frameGeometry().height() - MARGIN))
-        column = 20;
+    if (p.x() < MARGIN)
+        column = 1;
+    else if (p.x() < (this->frameGeometry().width() - MARGIN))
+        column = 2;
     else
-        column = 30;
+        column = 3;
+
+    int row;
+    if (p.y() < MARGIN)
+        row = 10;
+    else if (p.y() < titleHeight)
+        row = 20;
+    else if (p.y() < (this->frameGeometry().height() - MARGIN))
+        row = 30;
+    else
+        row = 40;
     return row + column;
 }
 
@@ -276,16 +232,18 @@ void MainWindow::setCursorShape(int flag)
     switch(flag)
     {
     case 11:
-    case 33:
+    case 43:
         cursorShape = Qt::SizeFDiagCursor;break;
     case 13:
-    case 31:
+    case 41:
         cursorShape = Qt::SizeBDiagCursor;break;
     case 21:
     case 23:
+    case 31:
+    case 33:
         cursorShape = Qt::SizeHorCursor;break;
     case 12:
-    case 32:
+    case 42:
         cursorShape = Qt::SizeVerCursor;break;
     case 22:
         //cursorShape = Qt::ArrowCursor;break;

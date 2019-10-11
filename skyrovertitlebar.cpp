@@ -2,15 +2,12 @@
 #include <QHBoxLayout>
 #include <QEvent>
 #include <QMouseEvent>
+#include <QDebug>
 
-#ifdef Q_OS_WIN
-#pragma comment(lib, "user32.lib")
-#include <qt_windows.h>
-#endif
 
 skyroverTitleBar::skyroverTitleBar(QWidget *parent) : QWidget(parent)
 {
-    setFixedHeight(30);
+    setFixedHeight(50);
     //setStyleSheet("background-color: rgb(0,0,0)");
     //setAutoFillBackground(true);
 
@@ -22,8 +19,8 @@ skyroverTitleBar::skyroverTitleBar(QWidget *parent) : QWidget(parent)
     m_pPlan = new QPushButton(this);
     m_pSetting = new QPushButton(this);
 
-    m_pMessage = new QTextBrowser(this);
-    m_pSpaceing = new QTextBrowser(this);
+    m_pMessage = new QLabel(this);
+    m_pSpaceing = new QLabel(this);
 
     m_pCloseButton = new QPushButton(this);
     m_pMaximizeButton = new QPushButton(this);
@@ -80,9 +77,13 @@ skyroverTitleBar::skyroverTitleBar(QWidget *parent) : QWidget(parent)
     m_pSetting->setIcon(QIcon(":/image/Gears.svg"));
     m_pSetting->setFlat(true);
 
-    m_pMinimizeButton->setToolTip("Minimize");
-    m_pMaximizeButton->setToolTip("Maximize");
-    m_pCloseButton->setToolTip("Close");
+    m_pMinimizeButton->setToolTip(tr("Minimize"));
+    m_pMaximizeButton->setToolTip(tr("Maximize"));
+    m_pCloseButton->setToolTip(tr("Close"));
+
+    m_pFly->setToolTip(tr("Fly"));
+    m_pPlan->setToolTip(tr("Plan"));
+    m_pSetting->setToolTip(tr("Setting"));
 
     QHBoxLayout *leftLayout = new QHBoxLayout();
     QHBoxLayout *rightLayout = new QHBoxLayout();
@@ -108,7 +109,7 @@ skyroverTitleBar::skyroverTitleBar(QWidget *parent) : QWidget(parent)
 
 
     //pLayout->addSpacing(0);
-    mainLayout->setContentsMargins(5, 0, 5, 0);
+    mainLayout->setContentsMargins(5, 5, 5, 5);
     setLayout(mainLayout);
 
     connect(m_pMaximizeButton, SIGNAL(clicked(bool)), this, SLOT(onClicked()));
@@ -123,21 +124,6 @@ void skyroverTitleBar::mouseDoubleClickEvent(QMouseEvent *event)
     emit m_pMaximizeButton->clicked();
 }
 
-void skyroverTitleBar::mousePressEvent(QMouseEvent *event)
-{
-#ifdef Q_OS_WIN
-    if (ReleaseCapture())
-    {
-        QWidget *pWindow = this->window();
-        if (pWindow->isTopLevel())
-        {
-           SendMessage(HWND(pWindow->winId()), WM_SYSCOMMAND, SC_MOVE + HTCAPTION, 0);
-        }
-    }
-       event->ignore();
-#else
-#endif
-}
 
 bool skyroverTitleBar::eventFilter(QObject *watched, QEvent *event)
 {
@@ -159,7 +145,7 @@ void skyroverTitleBar::onClicked()
 
     QWidget *pWindow = this->window();
 
-    if (pWindow->isTopLevel())
+    if (pWindow->isWindow())
     {
         if (pButton == m_pMinimizeButton)
         {
@@ -173,6 +159,7 @@ void skyroverTitleBar::onClicked()
         {
             pWindow->close();
         }
+        updateMaximize();
     }
 }
 
@@ -180,7 +167,7 @@ void skyroverTitleBar::updateMaximize()
 {
     QWidget *pWindow = this->window();
 
-    if (pWindow->isTopLevel())
+    if (pWindow->isWindow())
     {
         bool bMaximize = pWindow->isMaximized();
 

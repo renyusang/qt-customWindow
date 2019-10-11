@@ -33,6 +33,7 @@ private:
     bool m_bPressed;
     QPoint pLast;
     int m_curPos;
+    int titleHeight;
 
     void setCursorShape(int flag);
     int setCurFlag(QPoint p);

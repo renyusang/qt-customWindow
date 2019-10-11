@@ -17,7 +17,7 @@ protected:
 
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
-    virtual void mousePressEvent(QMouseEvent *event);
+    //virtual void mousePressEvent(QMouseEvent *event);
 
     virtual bool eventFilter(QObject *watched, QEvent *event);
 
@@ -35,8 +35,8 @@ private:
     QPushButton *m_pFly;
     QPushButton *m_pPlan;
     QPushButton *m_pSetting;
-    QTextBrowser *m_pMessage;
-    QTextBrowser *m_pSpaceing;
+    QLabel *m_pMessage;
+    QLabel *m_pSpaceing;
     QPushButton *m_pMinimizeButton;
     QPushButton *m_pMaximizeButton;
     QPushButton *m_pCloseButton;
