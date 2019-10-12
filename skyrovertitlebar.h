@@ -36,7 +36,7 @@ private:
     QPushButton *m_pPlan;
     QPushButton *m_pSetting;
     QLabel *m_pMessage;
-    QLabel *m_pSpaceing;
+    //QLabel *m_pSpaceing;
     QPushButton *m_pMinimizeButton;
     QPushButton *m_pMaximizeButton;
     QPushButton *m_pCloseButton;

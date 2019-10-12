@@ -14,20 +14,18 @@ skyroverTitleBar::skyroverTitleBar(QWidget *parent) : QWidget(parent)
 
     m_pIconLabel = new QLabel(this);
 
-    //m_pSpaceLabel = new QLabel(this);
     m_pFly = new QPushButton(this);
     m_pPlan = new QPushButton(this);
     m_pSetting = new QPushButton(this);
 
     m_pMessage = new QLabel(this);
-    m_pSpaceing = new QLabel(this);
 
     m_pCloseButton = new QPushButton(this);
     m_pMaximizeButton = new QPushButton(this);
     m_pMinimizeButton = new QPushButton(this);
 
-    m_pIconLabel->setFixedSize(74,28);
-    QPixmap m_logo = QPixmap(":/image/Logo.svg");
+    m_pIconLabel->setFixedSize(110,40);
+    QPixmap m_logo = QPixmap(":/image/SUS-SKY.svg");
 
     //QIcon icon = QIcon(":/image/Logo.svg");
     m_pIconLabel->setPixmap(m_logo.scaled(m_pIconLabel->size(),Qt::KeepAspectRatio));
@@ -38,11 +36,7 @@ skyroverTitleBar::skyroverTitleBar(QWidget *parent) : QWidget(parent)
     m_pMessage->setFrameStyle(QFrame::NoFrame);
     m_pMessage->setMinimumWidth(100);
 
-    m_pSpaceing->setPalette(pal);
-    m_pSpaceing->setFrameStyle(QFrame::NoFrame);
-    m_pSpaceing->setMinimumWidth(100);
-
-    //m_pSpaceLabel->setMinimumWidth(100);
+;
 
     m_pMinimizeButton->setFixedSize(28,28);
     m_pMinimizeButton->setIconSize(QSize(28,22));
@@ -92,18 +86,14 @@ skyroverTitleBar::skyroverTitleBar(QWidget *parent) : QWidget(parent)
     leftLayout->addWidget(m_pFly);
     leftLayout->addWidget(m_pPlan);
     leftLayout->addWidget(m_pSetting);
-    //pLayout->addSpacing(5);
-    //pLayout->addWidget(m_pIconLabel);
-    //pLayout->addWidget(m_pMessage);
 
     rightLayout->addWidget(m_pMinimizeButton);
     rightLayout->addWidget(m_pMaximizeButton);
     rightLayout->addWidget(m_pCloseButton);
 
+    mainLayout->addWidget(m_pIconLabel);
     mainLayout->addLayout(leftLayout);
-    //mainLayout->addStretch();
-    mainLayout->addWidget(m_pSpaceing);
-    mainLayout->addWidget(m_pIconLabel, Qt::AlignHCenter);
+
     mainLayout->addWidget(m_pMessage);
     mainLayout->addLayout(rightLayout);
 
